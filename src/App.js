@@ -92,6 +92,32 @@ class App extends Component {
         this.onCLoseForm()
     }
 
+    onUpdateStatus = (id) =>{
+        var { tasks } = this.state
+        var index = this.findIndex(id)
+        console.log(index)
+        if (index !== -1)
+        {
+            tasks[index].status = !tasks[index].status
+            this.setState({
+                tasks : tasks
+            })
+            localStorage.setItem('tasks', JSON.stringify(tasks))
+        }
+    }
+
+    findIndex = (id) => {
+        var { tasks } = this.state
+        var result = -1
+        tasks.forEach((task, index) => {
+            if (task.id === id)
+            {
+                result = index
+            }
+        })
+        return result
+    }
+
     render() {
 
         var { tasks, isDisplayForm } = this.state
@@ -135,7 +161,7 @@ class App extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
                                 {/* taskForm */}
-                                <TaskForm tasks = { tasks } />
+                                <TaskForm tasks = { tasks } onUpdateStatus = { this.onUpdateStatus }/>
 
                             </div>
                         </div>
