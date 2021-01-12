@@ -106,6 +106,20 @@ class App extends Component {
         }
     }
 
+    onDeleteStatus  = (id) => {
+        var { tasks } = this.state
+        var index = this.findIndex(id)
+        console.log(index)
+        if (index !== -1)
+        {
+            tasks.splice(index, 1)
+            this.setState({
+                tasks : tasks
+            })
+            localStorage.setItem('tasks', JSON.stringify(tasks))
+        }
+    }
+
     findIndex = (id) => {
         var { tasks } = this.state
         var result = -1
@@ -161,7 +175,10 @@ class App extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
                                 {/* taskForm */}
-                                <TaskForm tasks = { tasks } onUpdateStatus = { this.onUpdateStatus }/>
+                                <TaskForm tasks = { tasks }
+                                        onUpdateStatus = { this.onUpdateStatus }
+                                        onDeleteStatus = { this.onDeleteStatus }
+                                />
 
                             </div>
                         </div>
