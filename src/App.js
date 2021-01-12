@@ -9,7 +9,8 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            tasks : []
+            tasks : [],
+            isDisplayForm : false
         }
     }
 
@@ -56,9 +57,19 @@ class App extends Component {
 
     }
 
+
+    onShowForm = () => {
+        this.setState({
+            isDisplayForm : !this.state.isDisplayForm
+        })
+    }
+
     render() {
 
-        var { tasks } = this.state
+        var { tasks, isDisplayForm } = this.state
+
+        // add đóng mở form
+        var elements = isDisplayForm ? <Form /> : ''
 
         return (
             <div className="container">
@@ -67,21 +78,16 @@ class App extends Component {
                     <hr />
                 </div>
                 <div className="row">
-                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        <div className="panel panel-warning">
-                            <div className="panel-heading">
-                                <h3 className="panel-title">Thêm Công Việc</h3>
-                            </div>
-                            <div className="panel-body">
+
+                    {/* đóng ở form khi bấm thêm công việc */}
+                    <div className={ isDisplayForm === true ? "col-xs-4 col-sm-4 col-md-4 col-lg-4" : "col-xs-8 col-sm-8 col-md-8 col-lg-8" }>
+
                                 {/* form */}
+                                { elements }
 
-                                <Form />
-
-                            </div>
-                        </div>
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        <button type="button" className="btn btn-primary">
+                        <button type="button" className="btn btn-primary" onClick = { this.onShowForm }>
                             <span className="fa fa-plus mr-5" />Thêm Công Việc
                         </button>
 
