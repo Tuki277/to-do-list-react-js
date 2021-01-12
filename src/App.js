@@ -57,6 +57,16 @@ class App extends Component {
 
     }
 
+    //ham random
+
+    s4(){
+        return Math.floor((1+Math.random()) * 0x10000).toString(16).substring(1)
+    }
+
+    random(){
+        return this.s4() + this.s4() + this.s4() + this.s4() + this.s4()
+    }
+
 
     onShowForm = () => {
         this.setState({
@@ -64,12 +74,31 @@ class App extends Component {
         })
     }
 
+    onCLoseForm = () => {
+        this.setState({
+            isDisplayForm : false
+        })
+    }
+
+    // hàm onSubmitInApp để nhận data từ form để đổ dữ liệu ra app
+    onSubmitInApp = (data) => {
+        var { tasks } = this.state
+        data.id = this.random()
+        tasks.push(data)
+        this.setState({
+            tasks : tasks
+        })
+        localStorage.setItem('tasks', JSON.stringify(tasks))
+        this.onCLoseForm()
+    }
+
     render() {
 
         var { tasks, isDisplayForm } = this.state
 
         // add đóng mở form
-        var elements = isDisplayForm ? <Form /> : ''
+        // onSubmitInApp={ this.onSubmitInApp } để nhận data từ bên form sau khi thêm data
+        var elements = isDisplayForm ? <Form onSubmitInApp={ this.onSubmitInApp } /> : ''
 
         return (
             <div className="container">
@@ -86,7 +115,7 @@ class App extends Component {
                                 { elements }
 
                     </div>
-                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className={ isDisplayForm === true ? "col-xs-8 col-sm-8 col-md-8 col-lg-8" : "col-xs-12 col-sm-12 col-md-12 col-lg-12" }>
                         <button type="button" className="btn btn-primary" onClick = { this.onShowForm }>
                             <span className="fa fa-plus mr-5" />Thêm Công Việc
                         </button>
