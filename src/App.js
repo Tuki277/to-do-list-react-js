@@ -10,7 +10,8 @@ class App extends Component {
         super(props)
         this.state = {
             tasks : [],
-            isDisplayForm : false
+            isDisplayForm : false,
+            taskEditing : null
         }
     }
 
@@ -82,11 +83,25 @@ class App extends Component {
 
     // hàm onSubmitInApp để nhận data từ form để đổ dữ liệu ra app
     onSubmitInApp = (data) => {
+        // phân biệt data là data thêm vào hay là data update
         var { tasks } = this.state
-        data.id = this.random()
-        tasks.push(data)
+        if (data.id === '')
+        {
+            // nếu không bắt được id thì cấp cho nó 1 cái id rồi tiến hành thêm mới
+            data.id = this.random()
+            tasks.push(data)
+        }
+        else
+        {
+            // nếu bắt được id thì lấy ra task đó theo id rồi tiến hành cập nhật nó
+            var index = this.findIndex(data.id)
+            tasks[index] = data
+        }
+        
         this.setState({
-            tasks : tasks
+            tasks : tasks,
+            // xét taskEditing = null để khi cập nhập xong thì clear data, thêm mới sẽ không bị ghi data cũ cảu id lên
+            taskEditing : null
         })
         localStorage.setItem('tasks', JSON.stringify(tasks))
         this.onCLoseForm()
@@ -118,6 +133,18 @@ class App extends Component {
             })
             localStorage.setItem('tasks', JSON.stringify(tasks))
         }
+        this.onCLoseForm()
+    }
+
+    onEditTask = (id) => {
+        var { tasks } = this.state
+        var index = this.findIndex(id)
+        var taskEditing = tasks[index]
+        // console.log(taskEditing)
+        this.setState({
+            taskEditing : taskEditing
+        })
+        this.onShowForm()
     }
 
     findIndex = (id) => {
@@ -134,11 +161,11 @@ class App extends Component {
 
     render() {
 
-        var { tasks, isDisplayForm } = this.state
+        var { tasks, isDisplayForm, taskEditing } = this.state
 
         // add đóng mở form
         // onSubmitInApp={ this.onSubmitInApp } để nhận data từ bên form sau khi thêm data
-        var elements = isDisplayForm ? <Form onSubmitInApp={ this.onSubmitInApp } /> : ''
+        var elements = isDisplayForm ? <Form onSubmitInApp={ this.onSubmitInApp } task = { taskEditing } /> : ''
 
         return (
             <div className="container">
@@ -178,6 +205,7 @@ class App extends Component {
                                 <TaskForm tasks = { tasks }
                                         onUpdateStatus = { this.onUpdateStatus }
                                         onDeleteStatus = { this.onDeleteStatus }
+                                        onEditTask = { this.onEditTask }
                                 />
 
                             </div>
