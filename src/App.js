@@ -118,6 +118,7 @@ class App extends Component {
             })
             localStorage.setItem('tasks', JSON.stringify(tasks))
         }
+        this.onCLoseForm()
     }
 
     findIndex = (id) => {
@@ -178,6 +179,7 @@ class App extends Component {
                                 <TaskForm tasks = { tasks }
                                         onUpdateStatus = { this.onUpdateStatus }
                                         onDeleteStatus = { this.onDeleteStatus }
+                                        onShowForm = { this.onShowForm }
                                 />
 
                             </div>
