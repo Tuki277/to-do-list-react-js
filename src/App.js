@@ -176,9 +176,17 @@ class App extends Component {
         })
     }
 
+    // đổ data từ control ra app
+    onSearch = (keyword) => {
+        // console.log(keyword)
+        this.setState({
+            keyword : keyword
+        })
+    }
+
     render() {
 
-        var { tasks, isDisplayForm, taskEditing, filter } = this.state
+        var { tasks, isDisplayForm, taskEditing, filter, keyword } = this.state
 
         // lọc data
         // filter theo tên
@@ -199,7 +207,14 @@ class App extends Component {
             })
         }
 
-        console.log(filter)
+        // search
+        if (keyword){
+            tasks = tasks.filter((task) => {
+                return task.name.toLowerCase().indexOf(keyword) !== -1
+            })
+        }
+
+        // console.log(filter)
 
         // add đóng mở form
         // onSubmitInApp={ this.onSubmitInApp } để nhận data từ bên form sau khi thêm data
@@ -234,7 +249,7 @@ class App extends Component {
                         </button>
 
                         {/* Search - Sort */}
-                        <Control />
+                        <Control onSearch = { this.onSearch } />
 
                         <div className="row mt-15">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
