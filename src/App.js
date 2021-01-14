@@ -11,7 +11,11 @@ class App extends Component {
         this.state = {
             tasks : [],
             isDisplayForm : false,
-            taskEditing : null
+            taskEditing : null,
+            filter : {
+                name : '',
+                status : -1
+            }
         }
     }
 
@@ -159,9 +163,58 @@ class App extends Component {
         return result
     }
 
+    // nhận dữ liệu từ TaskForm đổ ra
+    onFilter = (filterName, filterStatus) => {
+        console.log(filterName + " - " + filterStatus)
+        filterStatus = parseInt(filterStatus)
+        this.setState({
+            filter : {
+                name : filterName.toLowerCase(),
+                // ép kiểu về chữ thường để khi nhập chữ hoa hay chữ thưởng thì đều filter được
+                status : filterStatus
+            }
+        })
+    }
+
+    // đổ data từ control ra app
+    onSearch = (keyword) => {
+        // console.log(keyword)
+        this.setState({
+            keyword : keyword
+        })
+    }
+
     render() {
 
-        var { tasks, isDisplayForm, taskEditing } = this.state
+        var { tasks, isDisplayForm, taskEditing, filter, keyword } = this.state
+
+        // lọc data
+        // filter theo tên
+        if (filter !== null){
+            if (filter.name !== null){
+                var tasks = tasks.filter((task) => {
+                    return task.name.toLowerCase().indexOf(filter.name) !== -1
+                })
+            }
+            // filter theo status, ở trường hợp này thì status luôn có giá trị nên k cần check giá trị nữa
+            tasks = tasks.filter((task) => {
+                if (filter.status === -1){
+                    return task
+                }
+                else{
+                    return task.status === (filter.status === 1 ? true : false )
+                }
+            })
+        }
+
+        // search
+        if (keyword){
+            tasks = tasks.filter((task) => {
+                return task.name.toLowerCase().indexOf(keyword) !== -1
+            })
+        }
+
+        // console.log(filter)
 
         // add đóng mở form
         // onSubmitInApp={ this.onSubmitInApp } để nhận data từ bên form sau khi thêm data
@@ -196,7 +249,7 @@ class App extends Component {
                         </button>
 
                         {/* Search - Sort */}
-                        <Control />
+                        <Control onSearch = { this.onSearch } />
 
                         <div className="row mt-15">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -206,6 +259,7 @@ class App extends Component {
                                         onUpdateStatus = { this.onUpdateStatus }
                                         onDeleteStatus = { this.onDeleteStatus }
                                         onEditTask = { this.onEditTask }
+                                        onFilter = { this.onFilter }
                                 />
 
                             </div>
